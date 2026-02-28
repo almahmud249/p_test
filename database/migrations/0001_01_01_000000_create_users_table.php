@@ -17,6 +17,9 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->foreignId('tenant_id')->constrained()->cascadeOnDelete();
+            $table->index('tenant_id');
+            $table->unique(['tenant_id', 'email']); // IMPORTANT
             $table->rememberToken();
             $table->timestamps();
         });
