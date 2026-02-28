@@ -14,16 +14,16 @@ class ResolveTenant
      */
     public function handle($request, Closure $next)
     {
-        $host      = $request->getHost();
-        $subdomain = explode('.', $host)[0];
+        $host  = $request->getHost();
+        $parts = explode('.', $host);
 
-        $tenant = \App\Models\Tenant::where('domain', $subdomain)->first();
+        $subdomain = $parts[0] ?? null;
 
-        if (! $tenant) {
-            abort(404, 'Tenant not found');
+        if (! $subdomain) {
+            abort(404);
         }
 
-        app()->instance('currentTenant', $tenant);
+        app()->instance('currentTenant', \App\Models\Tenant::where('domain', $subdomain)->first());
 
         return $next($request);
     }

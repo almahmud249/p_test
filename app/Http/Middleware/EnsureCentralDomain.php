@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Middleware;
 
 use Closure;
@@ -15,12 +14,10 @@ class EnsureCentralDomain
      */
     public function handle(Request $request, Closure $next)
     {
-        $host = $request->getHost(); 
-        // Example: admin.myapp.com
-
+        $host  = $request->getHost();
         $parts = explode('.', $host);
 
-        if (count($parts) < 3 || $parts[0] !== 'admin') {
+        if (($parts[0] ?? null) !== 'admin') {
             abort(403, 'Access denied.');
         }
 
