@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Middleware;
 
 use Closure;
@@ -14,18 +13,18 @@ class ResolveTenant
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
     public function handle($request, Closure $next)
-{
-    $host = $request->getHost();
-    $subdomain = explode('.', $host)[0];
+    {
+        $host      = $request->getHost();
+        $subdomain = explode('.', $host)[0];
 
-    $tenant = \App\Models\Tenant::where('domain', $subdomain)->first();
+        $tenant = \App\Models\Tenant::where('domain', $subdomain)->first();
 
-    if (!$tenant) {
-        abort(404, 'Tenant not found');
+        if (! $tenant) {
+            abort(404, 'Tenant not found');
+        }
+
+        app()->instance('currentTenant', $tenant);
+
+        return $next($request);
     }
-
-    app()->instance('currentTenant', $tenant);
-
-    return $next($request);
-}
 }
